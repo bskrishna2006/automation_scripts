@@ -9,6 +9,15 @@ YELLOW="\033[1;33m"
 BLUE="\033[0;34m"
 RESET="\033[0m"
 
+# Ensure script is executable
+if [[ ! -x "$0" ]]; then
+    echo -e "\033[1;33mThis script is not executable.\033[0m"
+    echo "Run the following command and try again:"
+    echo "  chmod +x $0"
+    exit 1
+fi
+
+# Start the script
 echo -e "${BLUE}Installed kernels:${RESET}"
 echo "-------------------------------------"
 
