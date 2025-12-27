@@ -5,6 +5,14 @@ set -euo pipefail
 SRC_DIR="/usr/share/applications"
 DEST_DIR="$HOME/Desktop"
 
+# 0. Ensure script is executable
+if [[ ! -x "$0" ]]; then
+    echo -e "This script is not executable."
+    echo "Run the following command and try again:"
+    echo "  chmod +x $0"
+    exit 1
+fi
+
 # 1. Get and sort .desktop files
 mapfile -t files < <(find "$SRC_DIR" -maxdepth 1 -type f -name "*.desktop" | sort -V)
 
