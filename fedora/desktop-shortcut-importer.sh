@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
+# Colour definitions
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[1;33m"
+BLUE="\033[0;34m"
+RESET="\033[0m"
+
 # Ensure executable
 if [[ ! -x "$0" ]]; then
-    echo "Making script executable..."
+    echo -e "${YELLOW}Making script executable...${RESET}"
     chmod +x "$0"
     exec "$0" "$@"
 fi
@@ -23,19 +30,19 @@ ensure_fzf() {
         return 0
     fi
 
-    echo "fzf is not installed."
+    echo -e "${YELLOW}fzf is not installed.${RESET}"
     read -rp "Do you want to install it now? (y/n): " ans
 
     if [[ "$ans" == "y" ]]; then
         if sudo dnf install -y fzf; then
-            echo "fzf installed successfully."
+            echo -e "${GREEN}fzf installed successfully.${RESET}"
             return 0
         else
-            echo "Failed to install fzf. Falling back to other modes."
+            echo -e "${RED}Failed to install fzf. Falling back to other modes.${RESET}"
             return 1
         fi
     else
-        echo "Skipping fzf installation."
+        echo -e "${YELLOW}Skipping fzf installation.${RESET}"
         return 1
     fi
 }
@@ -60,7 +67,7 @@ copy_and_trust() {
 
 menu() {
     echo
-    echo "Choose selection method:"
+    echo -e "${BLUE}Choose selection method:${RESET}"
     echo "1) Fuzzy search (fzf)"
     echo "2) Search by name (grep)"
     echo "3) List all and select by number"
@@ -72,7 +79,7 @@ menu() {
         2) grep_mode ;;
         3) list_mode ;;
         4) exit 0 ;;
-        *) echo "Invalid option"; menu ;;
+        *) echo -e "${RED}Invalid option${RESET}"; menu ;;
     esac
 }
 
@@ -97,12 +104,12 @@ grep_mode() {
     mapfile -t matches < <(printf '%s\n' "${ALL_FILES[@]}" | grep -i "$term" || true)
 
     if [[ ${#matches[@]} -eq 0 ]]; then
-        echo "No matches."
+        echo -e "${YELLOW}No matches.${RESET}"
         return
     fi
 
     echo
-    echo "Matches:"
+    echo -e "${BLUE}Matches:${RESET}"
     for i in "${!matches[@]}"; do
         printf "[%d] %s\n" "$((i+1))" "$(basename "${matches[$i]}")"
     done
@@ -117,7 +124,7 @@ grep_mode() {
 
 list_mode() {
     echo
-    echo "Available applications:"
+    echo -e "${BLUE}Available applications:${RESET}"
     for i in "${!ALL_FILES[@]}"; do
         printf "[%d] %s\n" "$((i+1))" "$(basename "${ALL_FILES[$i]}")"
     done
@@ -146,15 +153,15 @@ list_mode() {
 menu
 
 echo
-echo "========== Summary =========="
-echo "Copied:  ${#copied[@]}"
+echo -e "${BLUE}========== Summary ==========${RESET}"
+echo -e "Copied:  ${GREEN}${#copied[@]}${RESET}"
 printf '  %s\n' "${copied[@]:-}"
 
 echo
-echo "Skipped: ${#skipped[@]}"
+echo -e "Skipped: ${YELLOW}${#skipped[@]}${RESET}"
 printf '  %s\n' "${skipped[@]:-}"
 
 echo
-echo "Failed:  ${#failed[@]}"
+echo -e "Failed:  ${RED}${#failed[@]}${RESET}"
 printf '  %s\n' "${failed[@]:-}"
-echo "============================="
+echo -e "${BLUE}=============================${RESET}"
