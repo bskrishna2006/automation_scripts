@@ -32,6 +32,11 @@ read -rp "Enter choice [1-3]: " choice
 case "$choice" in
 
 1)
+    if [[ ${#kernels[@]} -le 1 ]]; then
+        echo "Only one kernel is installed. Nothing to remove."
+        exit 0
+    fi
+
     read -rp "Enter serial number of kernel to remove: " num
     idx=$((num - 1))
 
