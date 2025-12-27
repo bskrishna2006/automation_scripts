@@ -18,6 +18,28 @@ copied=()
 skipped=()
 failed=()
 
+ensure_fzf() {
+    if command -v fzf >/dev/null 2>&1; then
+        return 0
+    fi
+
+    echo "fzf is not installed."
+    read -rp "Do you want to install it now? (y/n): " ans
+
+    if [[ "$ans" == "y" ]]; then
+        if sudo dnf install -y fzf; then
+            echo "fzf installed successfully."
+            return 0
+        else
+            echo "Failed to install fzf. Falling back to other modes."
+            return 1
+        fi
+    else
+        echo "Skipping fzf installation."
+        return 1
+    fi
+}
+
 copy_and_trust() {
     local src="$1"
     local dest="$DEST_DIR/$(basename "$src")"
@@ -55,8 +77,7 @@ menu() {
 }
 
 fuzzy_mode() {
-    if ! command -v fzf >/dev/null 2>&1; then
-        echo "fzf not installed. Install with: sudo dnf install fzf"
+    if ! ensure_fzf; then
         return
     fi
 
