@@ -8,7 +8,7 @@ GREEN="\033[0;32m"
 RED="\033[0;31m"
 RESET="\033[0m"
 
-SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd)"
+SCRIPTS_DIR="$(cd "$(dirname "$0")" && pwd)/scripts"
 
 scripts=(
     "desktop-shortcut-importer.sh"
