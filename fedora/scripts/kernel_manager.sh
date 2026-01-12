@@ -23,11 +23,11 @@ echo "-------------------------------------"
 
 mapfile -t kernels < <(rpm -q kernel | sort -V)
 
-current_kernel="$(uname -r)"
+current_kernel="kernel-$(uname -r)"
 
 i=1
 for k in "${kernels[@]}"; do
-    if [[ "$k" == *"$current_kernel"* ]]; then
+    if [[ "$k" == "$current_kernel" ]]; then
         echo -e "[${i}] ${GREEN}${k}${RESET}  (currently running)"
     else
         echo "[${i}] $k"
@@ -87,7 +87,7 @@ case "$choice" in
 
     # Add current kernel
     for k in "${sorted[@]}"; do
-        [[ "$k" == *"$current_kernel"* ]] && keep_list+=("$k")
+        [[ "$k" == "$current_kernel" ]] && keep_list+=("$k")
     done
 
     # Add latest N kernels
